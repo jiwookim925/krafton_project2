@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { getToken } from "@/lib/auth";
-import { getBlog, getPosts } from "@/lib/api";
+import { getBlog, getCurrentUser, getPosts } from "@/lib/api";
 import { Blog, Post } from "@/types/blog";
 import SidebarLoginCard from "./SidebarLoginCard";
 import BlogManageCard from "./BlogManageCard";
@@ -12,18 +12,25 @@ export default function HomeAccountCard() {
   const [loggedIn, setLoggedIn] = useState<boolean | null>(null);
   const [blog, setBlog] = useState<Blog | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
+  // 카드에 표시할 이름 - 이제 blog.title 파싱 대신 실제 로그인된 kakao_id를 씀
+  const [kakaoId, setKakaoId] = useState<string>("");
 
   useEffect(() => {
     const token = getToken();
     const hasToken = token !== null;
     setLoggedIn(hasToken);
 
-    // 로그인 상태일 때만 블로그 관리 카드에 쓸 데이터를 불러옴
-    if (hasToken) {
-      Promise.all([getBlog(), getPosts()]).then(([blogData, postsData]) => {
-        setBlog(blogData);
-        setPosts(postsData);
-      });
+    if (hasToken && token) {
+      // 블로그/글 데이터랑 로그인된 유저 정보(kakao_id)를 동시에 불러옴
+      Promise.all([getBlog(), getPosts(), getCurrentUser(token)]).then(
+        ([blogData, postsData, currentUser]) => {
+          setBlog(blogData);
+          setPosts(postsData);
+          if (currentUser) {
+            setKakaoId(currentUser.kakao_id);
+          }
+        }
+      );
     }
   }, []);
 
@@ -33,15 +40,14 @@ export default function HomeAccountCard() {
   // 로그인 안 했으면 카카오 로그인 카드
   if (!loggedIn) return <SidebarLoginCard />;
 
-  // 로그인은 했는데 블로그/글 데이터를 아직 못 받아왔으면 잠깐 대기
+  // 로그인은 했는데 데이터를 아직 못 받아왔으면 잠깐 대기
   if (!blog) return null;
 
   const totalViews = posts.reduce((sum, post) => sum + post.viewCount, 0);
 
-  // 로그인했으면 블로그 관리 카드 (홈 화면이니까 "내 블로그" 탭을 활성 표시)
   return (
     <BlogManageCard
-      blogName={blog.title.replace("의 개발 일지", "")}
+      blogName={kakaoId}
       subscriberCount={0}
       totalViews={totalViews}
       visitorCount={blog.visitorCountToday}
