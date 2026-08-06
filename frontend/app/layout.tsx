@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import AuthInitializer from "@/components/AuthInitializer"; //수정
 
 import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
 
