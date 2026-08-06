@@ -78,13 +78,16 @@ export default function TopNav() {
             <Volume2 size={16} />
             <span>불법촬영물 유통 방지 조치 대상 확대 안내</span>
           </div>
-          <button type="button" className="icon-btn" aria-label="알림">
-            <Bell size={20} />
-          </button>
-          {/* 확인이 끝난 후에만 로그인버튼 또는 AccountMenu 중 하나를 보여줌 */}
+          {/* 알림 아이콘은 로그인 안 했을 땐 안 보이고, 로그인했을 때만 나타남 */}
+          {/* 확인이 끝난 후에만 (로그인버튼) 또는 (알림 아이콘 + AccountMenu) 중 하나를 보여줌 */}
           {checked &&
             (user ? (
-              <AccountMenu user={user} />
+              <>
+                <button type="button" className="icon-btn" aria-label="알림">
+                  <Bell size={20} />
+                </button>
+                <AccountMenu user={user} />
+              </>
             ) : (
               <button type="button" className="nav-cta" onClick={handleKakaoLogin}>
                 시작하기
