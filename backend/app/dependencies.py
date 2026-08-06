@@ -16,9 +16,9 @@ bearer_scheme = HTTPBearer()
 
 
 def get_current_user(
-    credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme),
+    credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme), #헤더를 읽어서 credential에 토근 넣음
     db: Session = Depends(get_db),
-) -> User:
+) -> User: #성공하면 user 객체 반환
     token = credentials.credentials  # "Bearer " 뗀 순수 토큰 문자열
     user_id = decode_access_token(token)
 
