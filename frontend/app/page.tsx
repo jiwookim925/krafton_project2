@@ -3,7 +3,7 @@ import TopNav from "@/components/TopNav";
 import HeroCarousel from "@/components/HeroCarousel";
 import CategoryTabs from "@/components/CategoryTabs";
 import RankedPostList from "@/components/RankedPostList";
-import SidebarLoginCard from "@/components/SidebarLoginCard";
+import HomeAccountCard from "@/components/HomeAccountCard";
 import CreatorRecommend from "@/components/CreatorRecommend";
 import RecentFeed from "@/components/RecentFeed";
 
@@ -56,7 +56,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
           )}
         </main>
         <aside className="content-sidebar">
-          <SidebarLoginCard />
+          <HomeAccountCard />
           <CreatorRecommend creators={users} />
           <RecentFeed posts={recentPosts} />
         </aside>

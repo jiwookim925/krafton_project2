@@ -803,3 +803,216 @@ body {
   overflow: hidden;
   background: var(--card-bg);
 }
+
+.account-menu-wrap {
+  position: relative;
+}
+
+.account-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 280px;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  z-index: 30;
+}
+
+.account-profile {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.account-nickname {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0 0 4px;
+}
+
+.account-email {
+  font-size: 13px;
+  color: var(--ink-muted);
+  margin: 0;
+}
+
+.account-manage-link {
+  font-size: 12px;
+  color: var(--ink-muted);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.account-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 16px 0;
+}
+
+.account-blogs-label {
+  font-size: 12px;
+  color: var(--ink-muted);
+  margin: 0 0 10px;
+}
+
+.account-blog-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.account-blog-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+}
+
+.account-blog-name {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.account-blog-actions {
+  display: flex;
+  gap: 12px;
+  color: var(--ink-muted);
+}
+
+.account-logout {
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: none;
+  font-size: 14px;
+  color: var(--ink-muted);
+  cursor: pointer;
+  padding: 0;
+}
+
+.manage-layout {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 32px 24px 80px;
+}
+
+.manage-card {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.manage-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.manage-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--card-bg);
+  color: var(--ink-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+
+.manage-header-text {
+  flex: 1;
+}
+
+.manage-blog-name {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0 0 4px;
+}
+
+.manage-subscriber {
+  font-size: 13px;
+  color: var(--ink-muted);
+  margin: 0;
+}
+
+.manage-chevron {
+  color: var(--ink-muted);
+}
+
+.manage-tabs {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  overflow: hidden;
+  margin: 20px 0;
+}
+
+.manage-tab {
+  flex: 1;
+  text-align: center;
+  padding: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-muted);
+  text-decoration: none;
+  border-right: 1px solid var(--border);
+}
+
+.manage-tab:last-child {
+  border-right: none;
+}
+
+.manage-tab--active {
+  color: var(--ink);
+  text-decoration: underline;
+}
+
+.manage-stats {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.manage-stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+  border-top: 1px solid var(--border);
+}
+
+.manage-stat-row:last-child {
+  border-bottom: 1px solid var(--border);
+}
+
+.manage-stat-label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.manage-stat-value {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+/* 로그인 안 했을 때 헤더에 보이는 "시작하기" 버튼. 이제 <a>가 아니라 <button>이라 기본 스타일 리셋 필요 */
+.nav-cta {
+  background: var(--ink);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 18px;
+  border-radius: 999px;
+  white-space: nowrap;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+}
