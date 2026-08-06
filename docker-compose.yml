@@ -1,0 +1,39 @@
+
+
+services:
+  # PostgreSQL DB Container
+  db:
+    
+    image: postgres:16
+    ports:
+      
+      - "5432:5432"
+    environment:
+      
+      POSTGRES_DB: tistory_clone
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: devpass
+    volumes:
+      
+      - pgdata:/var/lib/postgresql/data
+
+  # FastAPI backend container
+  backend:
+    # ./backend 폴더의 Dockerfile을 사용해서 백엔드 이미지를 빌드
+    build: ./backend
+    ports:
+      
+      - "8000:8000"
+    depends_on:
+      # backend를 실행하기 전에 db 컨테이너를 먼저 시작
+      - db
+    env_file:
+      # 환경변수 주입
+      - ./backend/.env
+    volumes:
+      # 로컬 코드 수정이 컨테이너 안에도 바로 반영. 배포 시 제거.
+      - ./backend/app:/app/app
+
+volumes:
+  # PostgreSQL 데이터가 저장되는 Docker volume
+  pgdata:

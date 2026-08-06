@@ -1,0 +1,12 @@
+로그아웃
+https://kauth.kakao.com/oauth/logout?client_id={REST_API_KEY}&logout_redirect_uri={http://localhost:8000/api/auth/kakao/callback}
+
+프론트 없이 백 실험
+http://localhost:8000/docs/
+
+로그인
+http://localhost:8000/api/auth/kakao/login
+
+DB-users 확인
+docker exec -it proj2-db-1 psql -U dev -d tistory_clone
+SELECT * FROM users;
