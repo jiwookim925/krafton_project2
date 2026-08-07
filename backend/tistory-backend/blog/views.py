@@ -243,7 +243,7 @@ class RecommendedBlogsView(APIView):
         data = [
             {
                 "id": user.id,
-                "blog_name": f"{user.nickname or ('user-' + str(user.id))}의 블로그",
+                "blog_name": f"{user.nickname or ('user-' + str(user.kakao_id))}의 블로그",
                 "owner_nickname": user.nickname,
                 "avatar": user.profile_image,
                 "subscriber_count": user.total_likes or 0,
@@ -267,8 +267,8 @@ class MyBlogView(APIView):
         return Response({
             "id": user.id,
             "owner_id": user.id,
-            "title": f"{user.nickname or ('user-' + str(user.id))} 님의 블로그",
-            "description": f"{user.nickname or ('user-' + str(user.id))} 님의 블로그 입니다.",
+            "title": f"{user.nickname or (str(user.kakao_id))} 님의 블로그",
+            "description": f"{user.nickname or ( str(user.kakao_id))} 님의 블로그 입니다.",
             "avatar": user.profile_image,
             "post_count": post_count,
             "visitor_count_today": 0,

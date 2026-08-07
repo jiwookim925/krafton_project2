@@ -23,7 +23,7 @@ class KakaoUser(models.Model):
         managed = False
 
     def __str__(self):
-        return self.nickname or f"user-{self.id}"
+        return self.nickname or f"user-{self.kakao_id}"
 
     # DRF/Django가 request.user에 기대하는 최소한의 인터페이스.
     # 이 유저들은 카카오 로그인으로만 생성되고 비밀번호가 없어서
