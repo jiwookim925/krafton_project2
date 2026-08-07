@@ -3,16 +3,18 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { getToken } from "@/lib/auth";
-import { getBlog, getCurrentUser, getPosts } from "@/lib/api";
+import { getCurrentUser, getMyBlog, getMyPosts } from "@/lib/api";
 import { Blog, Post } from "@/types/blog";
 import SidebarLoginCard from "./SidebarLoginCard";
 import BlogManageCard from "./BlogManageCard";
 
-// 이 카드가 렌더링되는 경로 기준으로 글쓰기/내 블로그/관리 중 활성 탭을 결정
-function tabForPathname(pathname: string): "write" | "blog" | "manage" {
+// 이 카드가 렌더링되는 경로 기준으로 글쓰기/내 블로그/관리 중 활성 탭을 결정.
+// 홈("/") 등 세 페이지가 아닌 곳에서는 어떤 탭도 활성화하지 않음("none")
+function tabForPathname(pathname: string): "write" | "blog" | "manage" | "none" {
   if (pathname === "/write") return "write";
   if (pathname === "/manage") return "manage";
-  return "blog";
+  if (pathname === "/my-blog") return "blog";
+  return "none";
 }
 
 export default function HomeAccountCard() {
@@ -48,18 +50,18 @@ export default function HomeAccountCard() {
         console.error("로그인 유저 정보를 불러오지 못했습니다:", error);
       });
 
-    // 블로그 정보(더미 API) - 실패해도 카드는 뜨고, 숫자만 기본값(0)으로 남음
-    getBlog()
+    // 내 블로그 정보(로그인 필요) - 실패해도 카드는 뜨고, 숫자만 기본값(0)으로 남음
+    getMyBlog(token)
       .then(setBlog)
       .catch((error) => {
-        console.error("블로그 정보를 불러오지 못했습니다 (json-server 확인):", error);
+        console.error("내 블로그 정보를 불러오지 못했습니다:", error);
       });
 
-    // 글 목록(더미 API) - 마찬가지로 실패해도 조회수만 0으로 남음
-    getPosts()
+    // 내가 쓴 글 목록(로그인 필요) - 마찬가지로 실패해도 조회수만 0으로 남음
+    getMyPosts(token)
       .then(setPosts)
       .catch((error) => {
-        console.error("글 목록을 불러오지 못했습니다 (json-server 확인):", error);
+        console.error("내 글 목록을 불러오지 못했습니다:", error);
       });
   }, []);
 

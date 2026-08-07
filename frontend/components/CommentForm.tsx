@@ -26,16 +26,14 @@ export default function CommentForm({ postId, onCreated }: CommentFormProps) {
     setError(null);
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/comments`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/comments/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           postId,
-          authorId: null,
           authorName: nickname.trim(),
           content: content.trim(),
           isSecret: false,
-          createdAt: new Date().toISOString(),
         }),
       });
 

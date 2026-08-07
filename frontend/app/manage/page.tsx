@@ -3,13 +3,10 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getToken } from "@/lib/auth";
-import { getMyPostsByAuthor } from "@/lib/api";
+import { deletePost, getMyPosts } from "@/lib/api";
 import { Post } from "@/types/blog";
 import TopNav from "@/components/TopNav";
 import HomeAccountCard from "@/components/HomeAccountCard";
-
-// 로그인 유저와 블로그 소유자를 잇는 실제 연결이 없어서 다른 화면들과 마찬가지로 1번 유저로 고정
-const CURRENT_AUTHOR_ID = 1;
 
 function formatDate(iso: string) {
   const date = new Date(iso);
@@ -29,15 +26,34 @@ function statusLabel(post: Post) {
 export default function ManagePage() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [posts, setPosts] = useState<Post[]>([]);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
 
   useEffect(() => {
-    const hasToken = getToken() !== null;
-    setLoggedIn(hasToken);
+    const token = getToken();
+    setLoggedIn(token !== null);
 
-    if (hasToken) {
-      getMyPostsByAuthor(CURRENT_AUTHOR_ID).then(setPosts);
+    if (token) {
+      // 로그인한 본인이 쓴 글(임시저장/비공개 포함)을 백엔드에서 토큰 기준으로 받아옴
+      getMyPosts(token).then(setPosts).catch(() => setPosts([]));
     }
   }, []);
+
+  async function handleDelete(post: Post) {
+    const token = getToken();
+    if (!token) return;
+    if (!window.confirm(`'${post.title}' 글을 삭제할까요? 되돌릴 수 없습니다.`)) return;
+
+    setDeletingId(post.id);
+    try {
+      await deletePost(post.id, token);
+      // 삭제 성공하면 목록에서 즉시 제거
+      setPosts((prev) => prev.filter((p) => p.id !== post.id));
+    } catch {
+      window.alert("삭제에 실패했습니다. 잠시 후 다시 시도해주세요.");
+    } finally {
+      setDeletingId(null);
+    }
+  }
 
   return (
     <div className="page">
@@ -69,6 +85,14 @@ export default function ManagePage() {
                   <div className="manage-post-row-meta">
                     <span>{formatDate(post.createdAt)}</span>
                     <span>조회 {post.viewCount}</span>
+                    <button
+                      type="button"
+                      className="manage-post-delete"
+                      onClick={() => handleDelete(post)}
+                      disabled={deletingId === post.id}
+                    >
+                      {deletingId === post.id ? "삭제 중..." : "삭제"}
+                    </button>
                   </div>
                 </li>
               ))

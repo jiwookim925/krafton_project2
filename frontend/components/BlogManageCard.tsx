@@ -7,8 +7,8 @@ interface BlogManageCardProps {
   // 전체 글 조회수 합계 (app/manage/page.tsx에서 posts 다 더해서 계산해서 넘겨줌)
   totalViews: number;
   visitorCount: number;
-  // 지금 어떤 탭이 활성화되어 있는지 (글쓰기/내 블로그/관리 중 하나)
-  activeTab: "write" | "blog" | "manage";
+  // 지금 어떤 탭이 활성화되어 있는지 (글쓰기/내 블로그/관리 중 하나, "none"이면 아무것도 강조 안 함)
+  activeTab: "write" | "blog" | "manage" | "none";
 }
 
 export default function BlogManageCard({

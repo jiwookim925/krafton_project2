@@ -742,6 +742,23 @@
       "sympathyCount": 0,
       "commentCount": 0,
       "id": "Yi0hmHk2Xd0"
+    },
+    {
+      "title": "ㅍㄴㅇㅍㄴㅇ",
+      "summary": "ㄴㅇㅍㄴㅇㅍㄴㅇㅍ",
+      "content": "ㄴㅇㅍㄴㅇㅍㄴㅇㅍ",
+      "thumbnail": "https://picsum.photos/seed/write-1786081067204/800/450",
+      "authorId": 1,
+      "categoryId": 1,
+      "tagIds": [],
+      "visibility": "public",
+      "isDraft": false,
+      "createdAt": "2026-08-07T05:37:47.204Z",
+      "updatedAt": "2026-08-07T05:37:47.204Z",
+      "viewCount": 0,
+      "sympathyCount": 0,
+      "commentCount": 0,
+      "id": "1K5YAhhe3As"
     }
   ],
   "comments": [
@@ -941,6 +958,15 @@
       "isSecret": false,
       "createdAt": "2026-08-06T10:35:32.341Z",
       "id": "Co5JkrBAs5E"
+    },
+    {
+      "postId": "Yi0hmHk2Xd0",
+      "authorId": null,
+      "authorName": "ㅈㅁㄴ",
+      "content": "ㄴㅁㄴㅊ",
+      "isSecret": false,
+      "createdAt": "2026-08-07T05:32:35.320Z",
+      "id": "XPLiLMA9Afw"
     }
   ],
   "guestbook": [

@@ -2,6 +2,8 @@
 // (다르면 AuthInitializer가 저장한 토큰을 우리 쪽에서 못 찾음)
 const TOKEN_KEY = "token";
 
+
+
 // 토큰 저장하기 (AuthInitializer가 로그인 콜백 받았을 때 사용)
 export function saveToken(token: string) {
   window.localStorage.setItem(TOKEN_KEY, token);

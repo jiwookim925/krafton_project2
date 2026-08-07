@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { getToken } from "@/lib/auth";
-import { createPost, getCategories, getTags } from "@/lib/api";
+import { createPost, getCategories, getTags, uploadImage } from "@/lib/api";
 import { Category, PostVisibility, Tag } from "@/types/blog";
 import TopNav from "@/components/TopNav";
 import WriteEditorToolbar from "@/components/WriteEditorToolbar";
@@ -41,8 +41,10 @@ export default function WritePage() {
   const [savingDraft, setSavingDraft] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [imageUploading, setImageUploading] = useState(false);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const token = getToken();
@@ -71,6 +73,25 @@ export default function WritePage() {
       const cursor = start + before.length + selected.length;
       textarea.setSelectionRange(cursor, cursor);
     });
+  }
+
+  async function handleImageSelected(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    // 같은 파일을 다시 골라도 onChange가 다시 동작하도록 값 초기화
+    event.target.value = "";
+    if (!file) return;
+
+    setImageUploading(true);
+    setError(null);
+    try {
+      const url = await uploadImage(file);
+      // 본문 커서 위치에 이미지 마크다운 삽입. 본문 첫 이미지는 자동으로 글 썸네일이 됨
+      handleInsert(`\n![이미지](${url})\n`, "", "");
+    } catch {
+      setError("이미지 업로드에 실패했습니다. (로그인 상태인지 확인해주세요)");
+    } finally {
+      setImageUploading(false);
+    }
   }
 
   async function handleSaveDraft() {
@@ -191,7 +212,18 @@ export default function WritePage() {
               onChange={(event) => setTitle(event.target.value)}
             />
 
-            <WriteEditorToolbar onInsert={handleInsert} />
+            <WriteEditorToolbar
+              onInsert={handleInsert}
+              onImage={() => fileInputRef.current?.click()}
+              imageUploading={imageUploading}
+            />
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              hidden
+              onChange={handleImageSelected}
+            />
 
             <textarea
               ref={textareaRef}

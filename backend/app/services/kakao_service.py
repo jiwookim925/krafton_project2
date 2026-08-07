@@ -24,12 +24,26 @@ async def get_kakao_access_token(code: str) -> str:
     if settings.KAKAO_CLIENT_SECRET:
         payload["client_secret"] = settings.KAKAO_CLIENT_SECRET
 
+    # 우리가 카카오에 뭘 보내는지 확인용 로그 (client_id 끝 4자리만, redirect_uri, secret 여부)
+    print(
+        f"[KAKAO TOKEN REQ] client_id=...{settings.KAKAO_REST_API_KEY[-4:]} "
+        f"redirect_uri={settings.KAKAO_REDIRECT_URI} "
+        f"secret_sent={bool(settings.KAKAO_CLIENT_SECRET)}",
+        flush=True,
+    )
+
     async with httpx.AsyncClient() as client:
         response = await client.post(
             KAKAO_TOKEN_URL,
             data=payload,
             headers={"Content-Type": "application/x-www-form-urlencoded"},
         )
+        if response.status_code >= 400:
+            # 카카오가 준 실제 에러 메시지(예: invalid_client, KOE010)를 로그로 남겨서 원인 파악
+            print(
+                f"[KAKAO TOKEN ERROR] status={response.status_code} body={response.text}",
+                flush=True,
+            )
         response.raise_for_status()  # 실패하면 에러 던짐
         token_data = response.json()
 

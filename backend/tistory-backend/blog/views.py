@@ -50,10 +50,10 @@ class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.select_related("author", "category").prefetch_related("tags")
     permission_classes = [IsAuthorOrReadOnly]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ["category__slug", "tags__slug", "status", "author__nickname"]
+    # 프론트가 글을 숫자 id로 조회/라우팅해서 slug 대신 기본 pk(id) 조회를 사용
+    filterset_fields = ["category__slug", "category", "tags__slug", "status", "author"]
     search_fields = ["title", "content", "summary"]
     ordering_fields = ["created_at", "view_count", "like_count"]
-    lookup_field = "slug"
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -81,7 +81,7 @@ class PostViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     @action(detail=True, methods=["post"], permission_classes=[permissions.IsAuthenticated])
-    def like(self, request, slug=None):
+    def like(self, request, pk=None):
         """좋아요 토글: 이미 눌렀으면 취소, 안 눌렀으면 추가. 유저당 1회만 카운트됨"""
         post = self.get_object()
         like, created = PostLike.objects.get_or_create(post=post, user=request.user)
@@ -121,6 +121,12 @@ class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
     permission_classes = [IsCommentOwnerOrReadOnly]
 
+    def get_permissions(self):
+        # 데모 단계: 비회원(게스트) 댓글 작성을 허용하기 위해 생성은 누구나 가능
+        if self.action == "create":
+            return [permissions.AllowAny()]
+        return super().get_permissions()
+
     def get_queryset(self):
         qs = Comment.objects.select_related("author", "post").prefetch_related("replies")
         post_id = self.request.query_params.get("post")
@@ -129,6 +135,38 @@ class CommentViewSet(viewsets.ModelViewSet):
         if self.action == "list":
             qs = qs.filter(parent__isnull=True)
         return qs
+
+    def create(self, request, *args, **kwargs):
+        """프론트 댓글 폼(postId/authorName/content/isSecret)을 그대로 받아 저장.
+        CamelCase 파서가 키를 snake_case로 바꿔주므로 post_id/author_name/is_secret로 읽음.
+        로그인 상태면 author를 request.user로, 아니면 guest_name(authorName)으로 기록."""
+        data = request.data
+        post_id = data.get("post") or data.get("post_id")
+        content = (data.get("content") or "").strip()
+        if not post_id or not content:
+            return Response(
+                {"detail": "post와 content는 필수입니다."}, status=status.HTTP_400_BAD_REQUEST
+            )
+        post = Post.objects.filter(pk=post_id).first()
+        if post is None:
+            return Response({"detail": "존재하지 않는 글입니다."}, status=status.HTTP_404_NOT_FOUND)
+
+        comment = Comment(
+            post=post,
+            content=content,
+            guest_name=(data.get("author_name") or data.get("guest_name") or "").strip(),
+            is_secret=bool(data.get("is_secret")),
+        )
+        parent_id = data.get("parent")
+        if parent_id:
+            comment.parent = Comment.objects.filter(pk=parent_id).first()
+        if request.user and request.user.is_authenticated:
+            comment.author = request.user
+            comment.guest_name = ""
+        comment.save()
+
+        serializer = self.get_serializer(comment)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def perform_destroy(self, instance):
         # 대댓글 구조를 보존하기 위해 실제로 지우지 않고 소프트 삭제
@@ -271,6 +309,41 @@ class MyBlogView(APIView):
             "description": f"{user.nickname or ( str(user.kakao_id))} 님의 블로그 입니다.",
             "avatar": user.profile_image,
             "post_count": post_count,
+            "visitor_count_today": 0,
+            "visitor_count_total": total_views,
+        })
+
+
+class PublicBlogView(APIView):
+    """홈(서버 컴포넌트)이 인증 없이 부르는 대표 블로그 정보.
+    로그인 유저의 개인 블로그(MyBlogView)와 달리, 발행글이 가장 많은 유저를
+    '대표 블로그'로 보여줌(없으면 첫 유저). 로그인/토큰 불필요."""
+
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        user = (
+            KakaoUser.objects.annotate(pub_count=Count("posts", filter=Q(posts__status=Post.Status.PUBLISHED)))
+            .order_by("-pub_count", "id")
+            .first()
+        )
+        if user is None:
+            return Response({
+                "id": 0, "owner_id": 0,
+                "title": "티스토리 클론", "description": "첫 글을 작성해보세요.",
+                "avatar": None, "post_count": 0,
+                "visitor_count_today": 0, "visitor_count_total": 0,
+            })
+
+        published_posts = user.posts.filter(status=Post.Status.PUBLISHED)
+        total_views = published_posts.aggregate(total=Sum("view_count"))["total"] or 0
+        return Response({
+            "id": user.id,
+            "owner_id": user.id,
+            "title": f"{user.nickname or (str(user.kakao_id))} 님의 블로그",
+            "description": f"{user.nickname or (str(user.kakao_id))} 님의 블로그 입니다.",
+            "avatar": user.profile_image,
+            "post_count": published_posts.count(),
             "visitor_count_today": 0,
             "visitor_count_total": total_views,
         })

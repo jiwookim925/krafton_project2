@@ -11,7 +11,7 @@ from .views import (
     CategoryViewSet, TagViewSet, PostViewSet, CommentViewSet, KakaoUserViewSet,
     RecommendedBlogsView,
     ImageUploadView, MyProfileView, MyPostListView, MyCommentListView, MyLikedPostListView,
-    MyBlogView,
+    MyBlogView, PublicBlogView,
 )
 
 router = DefaultRouter()
@@ -24,6 +24,7 @@ router.register("users", KakaoUserViewSet, basename="user")
 urlpatterns = [
     path("", include(router.urls)),
     #블로그 추가
+    path("blog/public/", PublicBlogView.as_view(), name="public_blog"),
     path("blog/", MyBlogView.as_view(), name="my_blog"),
     path("recommendedBlogs/", RecommendedBlogsView.as_view(), name="recommended_blogs"),
 

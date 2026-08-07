@@ -17,6 +17,7 @@ import PostAuthorCard from "@/components/PostAuthorCard";
 import PostNav from "@/components/PostNav";
 import CommentSection from "@/components/CommentSection";
 import RelatedPosts from "@/components/RelatedPosts";
+import PostDeleteButton from "@/components/PostDeleteButton";
 
 interface PostPageProps {
   params: Promise<{ id: string }>;
@@ -74,6 +75,9 @@ export default async function PostPage({ params }: PostPageProps) {
       <TopNav />
       <article className="post-layout">
         <PostHeader post={post} category={category} author={author} />
+        <div className="post-owner-actions">
+          <PostDeleteButton postId={post.id} authorId={post.authorId} />
+        </div>
         <PostContent post={post} />
         <PostTags tags={postTags} />
         <PostSympathyBar sympathyCount={post.sympathyCount} commentCount={post.commentCount} />

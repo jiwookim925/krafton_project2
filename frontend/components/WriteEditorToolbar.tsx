@@ -1,7 +1,11 @@
-import { Bold, Code, Heading2, Italic, Link2, List, Quote, Strikethrough } from "lucide-react";
+import { Bold, Code, Heading2, Image as ImageIcon, Italic, Link2, List, Quote, Strikethrough } from "lucide-react";
 
 interface WriteEditorToolbarProps {
   onInsert: (before: string, after?: string, placeholder?: string) => void;
+  // 이미지 버튼 클릭 시 호출(파일 선택창 열기). 부모(write 페이지)가 업로드를 처리함
+  onImage?: () => void;
+  // 업로드 진행 중이면 버튼 비활성화
+  imageUploading?: boolean;
 }
 
 const TOOLS = [
@@ -15,7 +19,7 @@ const TOOLS = [
   { icon: Code, label: "코드", before: "`", after: "`", placeholder: "code" },
 ];
 
-export default function WriteEditorToolbar({ onInsert }: WriteEditorToolbarProps) {
+export default function WriteEditorToolbar({ onInsert, onImage, imageUploading }: WriteEditorToolbarProps) {
   return (
     <div className="write-toolbar">
       {TOOLS.map(({ icon: Icon, label, before, after, placeholder }) => (
@@ -30,6 +34,18 @@ export default function WriteEditorToolbar({ onInsert }: WriteEditorToolbarProps
           <Icon size={18} />
         </button>
       ))}
+      {onImage && (
+        <button
+          type="button"
+          className="write-toolbar-btn"
+          title={imageUploading ? "업로드 중..." : "이미지"}
+          aria-label="이미지"
+          onClick={onImage}
+          disabled={imageUploading}
+        >
+          <ImageIcon size={18} />
+        </button>
+      )}
     </div>
   );
 }

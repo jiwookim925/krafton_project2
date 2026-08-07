@@ -2165,3 +2165,201 @@ body {
   color: #999;
   font-size: 13px;
 }
+/* ===== 홈(main2_3) 복원: Hero 캐러셀 / 랭킹 목록 / 크리에이터 추천 ===== */
+.hero {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--card-bg);
+  margin-bottom: 24px;
+}
+.hero-image {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 9;
+}
+.hero-badge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.hero-caption {
+  position: absolute;
+  left: 24px;
+  bottom: 24px;
+  right: 24px;
+  color: #ffffff;
+}
+.hero-title {
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.35;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+}
+.hero-author {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  font-size: 14px;
+}
+.hero-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  display: inline-block;
+}
+.hero-dots {
+  position: absolute;
+  bottom: 16px;
+  right: 24px;
+  display: flex;
+  gap: 6px;
+}
+.hero-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  padding: 0;
+}
+.hero-dot--active {
+  background: #ffffff;
+  width: 16px;
+  border-radius: 4px;
+}
+.ranked-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.ranked-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--border);
+}
+.ranked-number {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--border);
+  width: 28px;
+  flex: none;
+}
+.ranked-body {
+  flex: 1;
+  min-width: 0;
+}
+.ranked-eyebrow {
+  font-size: 13px;
+  color: var(--ink-muted);
+  margin-bottom: 4px;
+}
+.ranked-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+  text-decoration: none;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ranked-thumb {
+  position: relative;
+  flex: none;
+  width: 84px;
+  height: 64px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--card-bg);
+}
+.creator-section {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+}
+.creator-heading {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+.creator-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.creator-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.creator-name {
+  font-size: 14px;
+  font-weight: 600;
+}
+.creator-subscribe {
+  border: 1px solid var(--border);
+  background: #ffffff;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+}
+.creator-subscribe--active {
+  background: var(--ink);
+  color: #ffffff;
+  border-color: var(--ink);
+}
+
+/* 본문에 삽입된 업로드 이미지 */
+.post-content-image {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 12px 0;
+}
+
+/* 글 삭제 버튼 (관리 페이지 목록 / 상세페이지 작성자용) */
+.manage-post-delete,
+.post-delete-btn {
+  border: 1px solid #e2554d;
+  background: transparent;
+  color: #e2554d;
+  border-radius: 8px;
+  padding: 4px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.manage-post-delete:hover,
+.post-delete-btn:hover {
+  background: #e2554d;
+  color: #ffffff;
+}
+.manage-post-delete:disabled,
+.post-delete-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.manage-post-delete { margin-left: auto; }
+.post-owner-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin: 8px 0;
+}

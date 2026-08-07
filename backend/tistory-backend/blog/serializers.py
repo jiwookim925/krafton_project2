@@ -97,30 +97,36 @@ class PostListSerializer(serializers.ModelSerializer):
 class PostDetailSerializer(serializers.ModelSerializer):
     author = serializers.ReadOnlyField(source="author.nickname")
     author_id = serializers.ReadOnlyField()
-    category_id = serializers.ReadOnlyField()
-    tags = TagRelatedField(
-        many=True, slug_field="name", queryset=Tag.objects.all(), required=False
+    category = serializers.ReadOnlyField(source="category.name")
+    # 프론트가 categoryId(숫자)로 카테고리를 지정/조회하므로 읽기·쓰기 모두 지원
+    category_id = serializers.PrimaryKeyRelatedField(
+        source="category", queryset=Category.objects.all(), required=False, allow_null=True
     )
-    tag_ids = serializers.SerializerMethodField()
+    tags = TagSerializer(many=True, read_only=True)
+    # 프론트가 tagIds(숫자 배열)로 태그를 보냄. 읽기 땐 pk 목록, 쓰기 땐 태그 지정
+    tag_ids = serializers.PrimaryKeyRelatedField(
+        source="tags", many=True, queryset=Tag.objects.all(), required=False
+    )
     comment_count = serializers.SerializerMethodField()
     is_liked = serializers.SerializerMethodField()
     sympathy_count = serializers.IntegerField(source="like_count", read_only=True)
     visibility = serializers.SerializerMethodField()
     is_draft = serializers.SerializerMethodField()
+    # 프론트가 본문 첫 이미지 URL을 썸네일로 보냄. 우리 서버 /media/에 이미 올라간 파일이면 그 경로를 thumbnail로 저장
+    thumbnail_url = serializers.CharField(write_only=True, required=False, allow_blank=True)
 
     class Meta:
         model = Post
         fields = [
-            "id", "title", "slug", "content", "summary", "thumbnail",
+            "id", "title", "slug", "content", "summary", "thumbnail", "thumbnail_url",
             "author", "author_id", "category", "category_id",
             "tags", "tag_ids", "status", "visibility", "is_draft", "allow_comment",
             "view_count", "sympathy_count", "comment_count", "is_liked",
             "created_at", "updated_at", "published_at",
         ]
-        read_only_fields = ["slug", "view_count", "like_count"]
-
-    def get_tag_ids(self, obj):
-        return [tag.id for tag in obj.tags.all()]
+        # thumbnail은 ImageField라 프론트가 보내는 외부 URL 문자열을 직접 쓰기하면 검증 에러가 나므로 읽기 전용.
+        # 대신 thumbnail_url(write_only)로 받아서 create()에서 파일 경로로 세팅함
+        read_only_fields = ["slug", "view_count", "like_count", "thumbnail"]
 
     def get_comment_count(self, obj):
         return obj.comments.filter(is_deleted=False).count()
@@ -138,20 +144,32 @@ class PostDetailSerializer(serializers.ModelSerializer):
         return obj.status == Post.Status.DRAFT
 
     def create(self, validated_data):
+        # 본문 첫 이미지 URL(thumbnail_url)을 글 썸네일로 저장.
+        # 이미 /media/ 아래에 업로드된 파일이면 그 상대경로를 ImageField name으로 지정(재업로드 불필요)
+        thumbnail_url = validated_data.pop("thumbnail_url", "")
         validated_data["author"] = self.context["request"].user
-        return super().create(validated_data)
+        post = super().create(validated_data)
+        if thumbnail_url and "/media/" in thumbnail_url:
+            relative_path = thumbnail_url.split("/media/", 1)[1]
+            post.thumbnail.name = relative_path
+            post.save(update_fields=["thumbnail"])
+        return post
 
 
 class CommentSerializer(serializers.ModelSerializer):
     author = serializers.ReadOnlyField(source="author.nickname")
+    # 프론트 Comment 타입에 맞춘 읽기 필드 (postId/authorId/authorName)
+    post_id = serializers.IntegerField(read_only=True)
+    author_id = serializers.IntegerField(read_only=True, allow_null=True)
+    author_name = serializers.CharField(source="guest_name", read_only=True)
     replies = serializers.SerializerMethodField()
     content = serializers.SerializerMethodField()
 
     class Meta:
         model = Comment
         fields = [
-            "id", "post", "author", "guest_name", "parent",
-            "content", "is_secret", "replies",
+            "id", "post", "post_id", "author", "author_id", "author_name",
+            "guest_name", "parent", "content", "is_secret", "replies",
             "created_at", "updated_at",
         ]
         read_only_fields = ["post"]
