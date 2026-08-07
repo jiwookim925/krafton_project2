@@ -62,6 +62,14 @@ export function getComments(postId: number) {
   return fetchJSON<Comment[]>(`/comments?postId=${postId}`);
 }
 
+// 관리 페이지용: 공개 여부/임시저장 여부와 상관없이 해당 유저가 쓴 글을 전부 가져옴
+export async function getMyPosts(authorId: number): Promise<Post[]> {
+  const posts = await fetchJSON<Post[]>(`/posts?authorId=${authorId}`);
+  return posts.sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
+}
+
 interface CreatePostParams {
   title: string;
   summary: string;

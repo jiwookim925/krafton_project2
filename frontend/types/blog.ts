@@ -28,6 +28,8 @@ export interface Tag {
 
 export interface User {
   id: number;
+  username: string;
+  email: string;
   nickname: string;
   avatar: string;
 }
