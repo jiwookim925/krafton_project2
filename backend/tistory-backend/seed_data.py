@@ -20,9 +20,14 @@ cat_dev, _ = Category.objects.get_or_create(name="개발", defaults={"order": 1,
 cat_life, _ = Category.objects.get_or_create(name="일상", defaults={"order": 2, "description": "소소한 일상"})
 cat_review, _ = Category.objects.get_or_create(name="리뷰", defaults={"order": 3, "description": "제품/책 리뷰"})
 
-# 3) 태그
+# 3) 태그 (기존 태그와 대소문자만 다르면 slug 충돌이 나므로 대소문자 구분 없이 매칭)
 tag_names = ["Django", "Next.js", "Python", "TypeScript", "회고"]
-tags = {name: Tag.objects.get_or_create(name=name)[0] for name in tag_names}
+tags = {}
+for name in tag_names:
+    tag = Tag.objects.filter(name__iexact=name).first()
+    if tag is None:
+        tag = Tag.objects.create(name=name)
+    tags[name] = tag
 
 # 4) 게시글
 posts_spec = [
