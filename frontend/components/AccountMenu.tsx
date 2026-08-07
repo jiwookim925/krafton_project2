@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import { LayoutGrid, Pencil, Settings } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { clearToken } from "@/lib/auth";
@@ -16,7 +16,7 @@ interface AccountMenuProps {
 const OWNED_BLOGS = [{ id: 1, name: "네온의 개발 일지" }];
 
 export default function AccountMenu({ user }: AccountMenuProps) {
-  const router = useRouter();
+  // const router = useRouter();
   // 드롭다운 열림/닫힘 상태
   const [open, setOpen] = useState(false);
   // 드롭다운 바깥 클릭 감지용 ref
@@ -36,8 +36,7 @@ export default function AccountMenu({ user }: AccountMenuProps) {
   // 로그아웃 버튼 클릭 시: 저장된 토큰 지우고 홈으로 이동 + 새로고침해서 상태 초기화
   function handleLogout() {
     clearToken();
-    router.replace("/");
-    router.refresh();
+    window.location.href = "/";
   }
 
   return (
