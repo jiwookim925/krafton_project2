@@ -1,4 +1,13 @@
-import { Blog, Category, Post, RecommendedBlog, Tag, User } from "@/types/blog";
+import {
+  Blog,
+  Category,
+  Comment,
+  Post,
+  PostVisibility,
+  RecommendedBlog,
+  Tag,
+  User,
+} from "@/types/blog";
 import { AuthUser } from "@/types/auth";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -33,6 +42,66 @@ export function getRecommendedBlogs() {
 
 export function getBlog() {
   return fetchJSON<Blog>("/blog");
+}
+
+export async function getPostById(id: string): Promise<Post | null> {
+  const res = await fetch(`${BASE_URL}/posts/${id}`, { cache: "no-store" });
+
+  if (res.status === 404) {
+    return null;
+  }
+
+  if (!res.ok) {
+    throw new Error(`Failed to fetch post ${id}`);
+  }
+
+  return res.json();
+}
+
+export function getComments(postId: number) {
+  return fetchJSON<Comment[]>(`/comments?postId=${postId}`);
+}
+
+// 관리 페이지(json-server 더미 데이터)용: 공개 여부/임시저장 여부와 상관없이 해당 유저가 쓴 글을 전부 가져옴
+// 실제 백엔드를 쓰는 getMyPosts(token)과는 별개 함수라 이름을 구분함
+export async function getMyPostsByAuthor(authorId: number): Promise<Post[]> {
+  const posts = await fetchJSON<Post[]>(`/posts?authorId=${authorId}`);
+  return posts.sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
+}
+
+interface CreatePostParams {
+  title: string;
+  summary: string;
+  content: string;
+  thumbnail: string;
+  authorId: number;
+  categoryId: number;
+  tagIds: number[];
+  visibility: PostVisibility;
+  isDraft: boolean;
+}
+
+export async function createPost(params: CreatePostParams): Promise<Post> {
+  const res = await fetch(`${BASE_URL}/posts`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      ...params,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      viewCount: 0,
+      sympathyCount: 0,
+      commentCount: 0,
+    }),
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to create post");
+  }
+
+  return res.json();
 }
 
 // 저장해둔 토큰으로 "지금 로그인된 유저가 누구인지" 백엔드에 물어보는 함수

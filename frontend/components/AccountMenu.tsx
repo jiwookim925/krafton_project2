@@ -68,7 +68,9 @@ export default function AccountMenu({ user }: AccountMenuProps) {
           <ul className="account-blog-list">
             {OWNED_BLOGS.map((blog) => (
               <li key={blog.id} className="account-blog-row">
-                <span className="account-blog-name">{blog.name}</span>
+                <Link href="/" className="account-blog-name">
+                  {blog.name}
+                </Link>
                 <span className="account-blog-actions">
                   <Link href="/write" aria-label="글쓰기">
                     <Pencil size={16} />

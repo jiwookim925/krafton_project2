@@ -1,13 +1,23 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { getToken } from "@/lib/auth";
 import { getBlog, getCurrentUser, getPosts } from "@/lib/api";
 import { Blog, Post } from "@/types/blog";
 import SidebarLoginCard from "./SidebarLoginCard";
 import BlogManageCard from "./BlogManageCard";
 
+// 이 카드가 렌더링되는 경로 기준으로 글쓰기/내 블로그/관리 중 활성 탭을 결정
+function tabForPathname(pathname: string): "write" | "blog" | "manage" {
+  if (pathname === "/write") return "write";
+  if (pathname === "/manage") return "manage";
+  return "blog";
+}
+
 export default function HomeAccountCard() {
+  const pathname = usePathname();
+
   // null = 아직 확인 전, true = 로그인됨, false = 로그인 안 됨
   // "카드를 보여줄지 말지"는 오직 이 값 하나로만 결정함
   const [loggedIn, setLoggedIn] = useState<boolean | null>(null);
@@ -31,7 +41,7 @@ export default function HomeAccountCard() {
     getCurrentUser(token)
       .then((currentUser) => {
         if (currentUser) {
-          setKakaoId(currentUser.kakao_id);
+          setKakaoId(String(currentUser.kakao_id));
         }
       })
       .catch((error) => {
@@ -63,13 +73,14 @@ export default function HomeAccountCard() {
   const totalViews = posts.reduce((sum, post) => sum + post.viewCount, 0);
   const visitorCount = blog?.visitorCountToday ?? 0;
 
+  // 로그인했으면 블로그 관리 카드 (현재 경로에 맞는 탭을 활성 표시)
   return (
     <BlogManageCard
       blogName={kakaoId}
       subscriberCount={0}
       totalViews={totalViews}
       visitorCount={visitorCount}
-      activeTab="blog"
+      activeTab={tabForPathname(pathname)}
     />
   );
 }

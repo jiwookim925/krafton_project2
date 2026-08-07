@@ -20,8 +20,8 @@ export default function BlogManageCard({
 }: BlogManageCardProps) {
   return (
     <div className="manage-card">
-      {/* 상단: 블로그 아바타 + 이름 + 구독자 수 */}
-      <div className="manage-header">
+      {/* 상단: 블로그 아바타 + 이름 + 구독자 수 (전체가 블로그 홈으로 가는 링크) */}
+      <Link href="/" className="manage-header">
         <div className="manage-avatar">
           <Grip size={18} />
         </div>
@@ -30,7 +30,7 @@ export default function BlogManageCard({
           <p className="manage-subscriber">구독자 {subscriberCount}명</p>
         </div>
         <ChevronDown size={18} className="manage-chevron" />
-      </div>
+      </Link>
 
       {/* 글쓰기 / 내 블로그 / 관리 탭 - activeTab이랑 이름 같은 것만 강조 스타일 적용 */}
       <div className="manage-tabs">
