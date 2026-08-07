@@ -43,7 +43,7 @@ export default function BlogManageCard({
           글쓰기
         </Link>
         <Link
-          href="/"
+          href="/my-blog"
           className={
             activeTab === "blog" ? "manage-tab manage-tab--active" : "manage-tab"
           }

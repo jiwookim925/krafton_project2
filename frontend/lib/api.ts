@@ -91,3 +91,34 @@ export async function getPosts(params: GetPostsParams = {}) {
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     );
 }
+
+//블로그추가
+export async function getMyBlog(token: string): Promise<Blog> {
+  const res = await fetch(`${BASE_URL}/blog/`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch my blog");
+  }
+
+  return res.json();
+}
+
+export async function getMyPosts(token: string): Promise<Post[]> {
+  const res = await fetch(`${BASE_URL}/mypage/posts/`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch my posts");
+  }
+
+  return res.json();
+}

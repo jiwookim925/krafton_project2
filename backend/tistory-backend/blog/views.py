@@ -252,3 +252,25 @@ class RecommendedBlogsView(APIView):
             for user in users
         ]
         return Response(data)
+
+#블로그 추가
+class MyBlogView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+
+        published_posts = user.posts.filter(status=Post.Status.PUBLISHED)
+        post_count = published_posts.count()
+        total_views = published_posts.aggregate(total=Sum("view_count"))["total"] or 0
+
+        return Response({
+            "id": user.id,
+            "owner_id": user.id,
+            "title": f"{user.nickname or ('user-' + str(user.id))} 님의 블로그",
+            "description": f"{user.nickname or ('user-' + str(user.id))} 님의 블로그 입니다.",
+            "avatar": user.profile_image,
+            "post_count": post_count,
+            "visitor_count_today": 0,
+            "visitor_count_total": total_views,
+        })

@@ -1,3 +1,16 @@
+//블로그 추가
+export interface Blog {
+  id: number;
+  ownerId: number;
+  title: string;
+  description: string;
+  avatar?: string | null;
+  skin?: string;
+  postCount?: number;
+  visitorCountToday: number;
+  visitorCountTotal: number;
+}
+
 export interface Category {
   id: number;
   name: string;

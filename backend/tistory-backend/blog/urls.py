@@ -6,6 +6,13 @@ from .views import (
     RecommendedBlogsView,
     ImageUploadView, MyProfileView, MyPostListView, MyCommentListView, MyLikedPostListView,
 )
+#블로그 추가
+from .views import (
+    CategoryViewSet, TagViewSet, PostViewSet, CommentViewSet, KakaoUserViewSet,
+    RecommendedBlogsView,
+    ImageUploadView, MyProfileView, MyPostListView, MyCommentListView, MyLikedPostListView,
+    MyBlogView,
+)
 
 router = DefaultRouter()
 router.register("categories", CategoryViewSet, basename="category")
@@ -16,6 +23,8 @@ router.register("users", KakaoUserViewSet, basename="user")
 
 urlpatterns = [
     path("", include(router.urls)),
+    #블로그 추가
+    path("blog/", MyBlogView.as_view(), name="my_blog"),
     path("recommendedBlogs/", RecommendedBlogsView.as_view(), name="recommended_blogs"),
 
     # 이미지 업로드 (글쓰기 에디터용)
@@ -26,4 +35,5 @@ urlpatterns = [
     path("mypage/posts/", MyPostListView.as_view(), name="mypage_posts"),
     path("mypage/comments/", MyCommentListView.as_view(), name="mypage_comments"),
     path("mypage/liked-posts/", MyLikedPostListView.as_view(), name="mypage_liked_posts"),
+    
 ]
