@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { getMyBlog, getMyPosts } from "@/lib/api";
 import { getToken } from "@/lib/auth";
 import { Blog, Post } from "@/types/blog";
 
 export default function MyBlogPage() {
+  const router = useRouter();
   const [blog, setBlog] = useState<Blog | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
@@ -54,12 +56,15 @@ export default function MyBlogPage() {
             <div className="my-blog-empty">
               <h2>아직 작성하신 글이 없어요.</h2>
               <p>내 블로그의 첫 시작이 될 오늘의 기록을 남겨보세요!</p>
-              <button type="button">글쓰기</button>
+              <button type="button"onClick={() => router.push("/write")}>글쓰기</button>
             </div>
           ) : (
             <ul className="my-blog-post-list">
               {posts.map((post) => (
-                <li key={post.id}>
+                <li key={post.id}
+                onClick={() => router.push(`/posts/${post.id}`)}
+                style={{ cursor: "pointer" }}
+                >
                   <h2>{post.title}</h2>
                   <p>{post.summary}</p>
                   <div>
@@ -68,6 +73,7 @@ export default function MyBlogPage() {
                   </div>
                 </li>
               ))}
+
             </ul>
           )}
         </div>
@@ -82,7 +88,7 @@ export default function MyBlogPage() {
             <p>{blog.description}</p>
 
             <div className="my-blog-actions">
-              <button type="button">글쓰기</button>
+              <button type="button" onClick={() => router.push("/write")}>글쓰기</button>
               <button type="button">블로그 관리</button>
             </div>
           </div>
