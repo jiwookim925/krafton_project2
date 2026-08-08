@@ -19,7 +19,7 @@ with transaction.atomic():
     # 1) 작성자 (카카오 로그인 없이 테스트용으로 직접 생성)
     author, _ = KakaoUser.objects.get_or_create(
         kakao_id=1000000001,
-        defaults={"nickname": "테스트유저", "profile_image": None, "created_at": timezone.now()},
+        defaults={"nickname": "김지안", "profile_image": None, "created_at": timezone.now()},
     )
 
     # 2) 카테고리
@@ -47,9 +47,9 @@ with transaction.atomic():
             "like_count": 12,
         },
         {
-            "title": "Next.js 16 App Router 첫인상",
-            "summary": "서버 컴포넌트와 App Router로 블로그 프론트를 구성해본 후기입니다.",
-            "content": "본문입니다. App Router의 서버 컴포넌트 덕분에 데이터 패칭이 훨씬 단순해졌습니다.",
+            "title": "저는.. 403 교육동에 있는 팀원이에요",
+            "summary": "///^^///",
+            "content": "저는.. 403 교육동에 있는 팀원이에요 ///^^//// 다들 좋은 하루 보내시고 저희 클론 페이지 봐주셔서 감사해요! 다음주도 파이팅~~!!!",
             "category": cat_dev,
             "tags": ["Next.js", "TypeScript"],
             "view_count": 231,
@@ -74,9 +74,9 @@ with transaction.atomic():
             "like_count": 3,
         },
         {
-            "title": "개발 서적 리뷰: 클린 아키텍처",
-            "summary": "읽고 실무에 적용해본 포인트를 정리한 리뷰입니다.",
-            "content": "본문입니다. 경계와 의존성 규칙에 대한 통찰이 특히 유용했습니다.",
+            "title": "다들 저녁 뭐 드셨어요? 저는 햄버거 먹었습니다",
+            "summary": "버거-day 후기입니다.",
+            "content": "오늘 구내식당 점심으로 햄버거가 나왔네요. 패티가 두 개나 들어있어서 엄청 배불렀습니다. 같이 나온 참치도 맛있었어요.",
             "category": cat_review,
             "tags": ["Python", "회고"],
             "view_count": 120,

@@ -3,6 +3,12 @@
 import { useState } from "react";
 import { X } from "lucide-react";
 import { Category, PostVisibility, Tag } from "@/types/blog";
+//카테고리 태그 추가
+const TAGS_BY_CATEGORY: Record<string, string[]> = {
+  "개발": ["django", "docker", "Python", "Next.js", "배포"],
+  "일상": ["회고", "403교육동", "405교육동", "소소한행복", "오늘의기록"],
+  "리뷰": ["제품리뷰", "영화리뷰", "맛집", "카페", "가성비템"],
+};
 
 interface PublishModalProps {
   categories: Category[];
@@ -103,11 +109,25 @@ export default function PublishModal({
 
           <div className="publish-field">
             <span className="publish-label">태그</span>
-            {tags.length === 0 ? (
-              <p className="publish-tag-empty">등록된 태그가 없습니다.</p>
-            ) : (
-              <div className="publish-tag-list">
-                {tags.map((tag) => {
+            {(() => {
+              const selectedCategory = categories.find(
+                (category) => Number(category.id) === selectedCategoryId
+              );
+              const allowedNames = selectedCategory
+                ? TAGS_BY_CATEGORY[selectedCategory.name]
+                : undefined;
+              const visibleTags = allowedNames
+                ? tags.filter((tag) => allowedNames.includes(tag.name))
+                : tags;
+
+              if (visibleTags.length === 0) {
+                return <p className="publish-tag-empty">등록된 태그가 없습니다.</p>;
+              }
+
+              return (
+                <div className="publish-tag-list">
+                  {visibleTags.map((tag) => {
+
                   const numericId = Number(tag.id);
                   return (
                     <button
@@ -125,8 +145,11 @@ export default function PublishModal({
                   );
                 })}
               </div>
-            )}
+            );
+            })()}  
           </div>
+          {/* //태그 수정 */}
+
         </div>
 
         <div className="publish-modal-footer">
