@@ -25,7 +25,8 @@ export default function HomeAccountCard() {
   const [loggedIn, setLoggedIn] = useState<boolean | null>(null);
 
   // 아래 값들은 카드 안의 숫자를 채우는 용도일 뿐, 못 받아와도 카드 자체는 그대로 보여줌
-  const [kakaoId, setKakaoId] = useState<string>("");
+  const [nickname, setNickname] = useState<string>("");
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [blog, setBlog] = useState<Blog | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
 
@@ -43,7 +44,8 @@ export default function HomeAccountCard() {
     getCurrentUser(token)
       .then((currentUser) => {
         if (currentUser) {
-          setKakaoId(String(currentUser.kakao_id));
+          setNickname(currentUser.nickname ?? String(currentUser.kakao_id));
+          setAvatarUrl(currentUser.profile_image);
         }
       })
       .catch((error) => {
@@ -78,7 +80,8 @@ export default function HomeAccountCard() {
   // 로그인했으면 블로그 관리 카드 (현재 경로에 맞는 탭을 활성 표시)
   return (
     <BlogManageCard
-      blogName={kakaoId}
+      blogName={nickname}
+      avatarUrl={avatarUrl}
       subscriberCount={0}
       totalViews={totalViews}
       visitorCount={visitorCount}

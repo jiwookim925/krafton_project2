@@ -1,8 +1,11 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ChevronDown, ChevronRight, Grip, Wallet } from "lucide-react";
 
 interface BlogManageCardProps {
   blogName: string;
+  // 카카오 프로필 사진 - 동의 안 했거나 아직 안 불러왔으면 null (그럼 기본 아이콘 표시)
+  avatarUrl?: string | null;
   subscriberCount: number;
   // 전체 글 조회수 합계 (app/manage/page.tsx에서 posts 다 더해서 계산해서 넘겨줌)
   totalViews: number;
@@ -13,6 +16,7 @@ interface BlogManageCardProps {
 
 export default function BlogManageCard({
   blogName,
+  avatarUrl,
   subscriberCount,
   totalViews,
   visitorCount,
@@ -23,7 +27,11 @@ export default function BlogManageCard({
       {/* 상단: 블로그 아바타 + 이름 + 구독자 수 (전체가 블로그 홈으로 가는 링크) */}
       <Link href="/" className="manage-header">
         <div className="manage-avatar">
-          <Grip size={18} />
+          {avatarUrl ? (
+            <Image src={avatarUrl} alt="" width={48} height={48} />
+          ) : (
+            <Grip size={18} />
+          )}
         </div>
         <div className="manage-header-text">
           <p className="manage-blog-name">{blogName} 님의 블로그</p>

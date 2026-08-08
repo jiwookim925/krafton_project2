@@ -8,6 +8,9 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: "https", hostname: "picsum.photos" },
       { protocol: "https", hostname: "i.pravatar.cc" },
+      // 카카오 프로필 사진 CDN (http로 오는 경우도 있음)
+      { protocol: "https", hostname: "*.kakaocdn.net" },
+      { protocol: "http", hostname: "*.kakaocdn.net" },
       // Django가 서빙하는 업로드 이미지(/media/...)를 next/image에서 쓰기 위해 허용
       { protocol: "http", hostname: "localhost", port: "8001", pathname: "/media/**" },
       { protocol: "http", hostname: "127.0.0.1", port: "8001", pathname: "/media/**" },

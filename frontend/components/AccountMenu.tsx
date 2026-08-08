@@ -12,15 +12,18 @@ interface AccountMenuProps {
   user: AuthUser;
 }
 
-// TODO: 운영중인 블로그 목록도 실제 API가 생기면 여기 하드코딩 대신 props로 받기
-const OWNED_BLOGS = [{ id: 1, name: "네온의 개발 일지" }];
-
 export default function AccountMenu({ user }: AccountMenuProps) {
   // const router = useRouter();
   // 드롭다운 열림/닫힘 상태
   const [open, setOpen] = useState(false);
   // 드롭다운 바깥 클릭 감지용 ref
   const wrapperRef = useRef<HTMLDivElement>(null);
+
+  // 카카오 닉네임 동의 안 했으면 kakao_id로 폴백
+  const displayName = user.nickname ?? String(user.kakao_id);
+
+  // TODO: 운영중인 블로그 목록도 실제 API가 생기면 여기 하드코딩 대신 props로 받기
+  const ownedBlogs = [{ id: 1, name: `${displayName}님의 블로그` }];
 
   useEffect(() => {
     // 드롭다운 영역 바깥을 클릭하면 자동으로 닫히게 하는 이벤트 리스너
@@ -52,10 +55,9 @@ export default function AccountMenu({ user }: AccountMenuProps) {
 
       {open && (
         <div className="account-dropdown">
-          {/* 실제 로그인된 유저의 kakao_id만 표시 (백엔드가 이것만 줘서 이메일/닉네임 줄은 뺌) */}
           <div className="account-profile">
             <div>
-              <p className="account-nickname">{user.kakao_id}</p>
+              <p className="account-nickname">{displayName}</p>
             </div>
             <Link href="/account" className="account-manage-link">
               계정관리
@@ -66,7 +68,7 @@ export default function AccountMenu({ user }: AccountMenuProps) {
 
           <p className="account-blogs-label">운영중인 블로그</p>
           <ul className="account-blog-list">
-            {OWNED_BLOGS.map((blog) => (
+            {ownedBlogs.map((blog) => (
               <li key={blog.id} className="account-blog-row">
                 <Link href="/" className="account-blog-name">
                   {blog.name}

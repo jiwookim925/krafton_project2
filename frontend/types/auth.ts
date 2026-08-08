@@ -4,4 +4,7 @@ export interface AuthUser {
   // 백엔드 users 테이블의 PK. 글 작성자(authorId)와 비교해 "내 글인지" 판단할 때 씀
   id: number;
   kakao_id: number;
+  // 카카오 동의 항목이라 없을 수도 있음(null) - 화면에 쓸 땐 kakao_id로 폴백
+  nickname: string | null;
+  profile_image: string | null;
 }

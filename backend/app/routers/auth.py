@@ -24,11 +24,13 @@ def kakao_login():
     """
     kakao_auth_url = (
         "https://kauth.kakao.com/oauth/authorize"
-        f"?client_id={settings.KAKAO_REST_API_KEY}"
-        f"&redirect_uri={settings.KAKAO_REDIRECT_URI}"
-        "&response_type=code"
+        f"?client_id={settings.KAKAO_REST_API_KEY}" # 앱 식별 키
+        f"&redirect_uri={settings.KAKAO_REDIRECT_URI}" #성공 후 돌아올 백엔드 주소
+        "&response_type=code" #인가코드 요청
+        "&scope=profile_nickname,profile_image" # 닉네임/프로필사진 동의 요청 *프로필,닉네임 받아오게수정
     )
-    return RedirectResponse(url=kakao_auth_url)
+    return RedirectResponse(url=kakao_auth_url) 
+#사용자를 카카오 로그인 페이지로 보냄->로그인->카카오가 리다이렉트(+인가코드)
 
 
 @router.get("/kakao/callback")
@@ -50,12 +52,18 @@ async def kakao_callback(code: str, db: Session = Depends(get_db)):
         # 처음 온 사용자면 신규 가입
         user = User(
             kakao_id=kakao_user_info["kakao_id"],
-            nickname=kakao_user_info["nickname"],
+            nickname=kakao_user_info["nickname"] or str(kakao_user_info["kakao_id"]),
             profile_image=kakao_user_info["profile_image"],
         )
         db.add(user)
-        db.commit()
-        db.refresh(user)
+    else:
+        # 기존 유저도 로그인할 때마다 카카오 쪽 최신 닉네임/프로필 사진으로 갱신
+        # (동의 항목 추가 전에 가입한 유저는 nickname이 kakao_id 문자열로 남아있을 수 있어서 필요)
+        user.nickname = kakao_user_info["nickname"] or str(kakao_user_info["kakao_id"])
+        user.profile_image = kakao_user_info["profile_image"]
+
+    db.commit()
+    db.refresh(user)
 
     # 3-4. 우리 서비스 JWT 발급
     access_token = jwt_service.create_access_token(user_id=user.id)
@@ -65,8 +73,8 @@ async def kakao_callback(code: str, db: Session = Depends(get_db)):
     return RedirectResponse(url=redirect_url)
 
 
-@router.get("/me", response_model=UserResponse)
-def get_my_info(current_user: User = Depends(get_current_user)):
+@router.get("/me", response_model=UserResponse) #응답시 UserResponse 모양으로 보내라.(db에서 가져온 User객체 프론트에 보낼 json모양으로 정리)
+def get_my_info(current_user: User = Depends(get_current_user)): #get_current실행해서 결과 current_user에 넣음
     """
     (테스트용) 내 JWT로 내 정보 조회.
     프론트에서 Authorization: Bearer {token} 헤더 넣어서 호출하면 됨.
