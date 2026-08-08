@@ -1,5 +1,5 @@
 "use client";
-
+import { Suspense } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Bell, Volume2 } from "lucide-react";
@@ -72,7 +72,9 @@ export default function TopNav() {
             포럼
           </Link>
         </nav>
-        <HeaderSearch />
+        <Suspense fallback={null}>
+           <HeaderSearch />
+        </Suspense>
         <div className="nav-right">
           <div className="notice">
             <Volume2 size={16} />
