@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { User } from "@/types/blog";
 
@@ -8,6 +9,7 @@ interface CreatorRecommendProps {
 }
 
 export default function CreatorRecommend({ creators }: CreatorRecommendProps) {
+  const router = useRouter();
   const [subscribedIds, setSubscribedIds] = useState<number[]>([]);
 
   function toggleSubscribe(id: number) {
@@ -23,7 +25,11 @@ export default function CreatorRecommend({ creators }: CreatorRecommendProps) {
         {creators.map((creator) => {
           const isSubscribed = subscribedIds.includes(creator.id);
           return (
-            <li key={creator.id} className="creator-item">
+            <li
+              key={creator.id}
+              className="creator-item"
+              onClick={() => router.push(`/blog/${creator.id}`)}
+            >
               <span className="creator-name">{creator.nickname}</span>
               <button
                 type="button"
@@ -32,7 +38,10 @@ export default function CreatorRecommend({ creators }: CreatorRecommendProps) {
                     ? "creator-subscribe creator-subscribe--active"
                     : "creator-subscribe"
                 }
-                onClick={() => toggleSubscribe(creator.id)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleSubscribe(creator.id);
+                }}
               >
                 {isSubscribed ? "구독중" : "+ 구독"}
               </button>

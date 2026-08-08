@@ -2387,6 +2387,7 @@ body {
   margin: 0 -8px;
   border-radius: 8px;
   transition: background-color 0.15s ease;
+  cursor: pointer;
 }
 
 .creator-item:hover {
@@ -2394,7 +2395,9 @@ body {
 }
 .creator-name {
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: none;
 }
 .creator-subscribe {
   border: 1px solid var(--border);

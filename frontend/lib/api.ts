@@ -176,6 +176,7 @@ interface GetPostsParams {
   categoryId?: number;
   tagId?: number;
   query?: string;
+  authorId?: number;
 }
 
 export async function getPosts(params: GetPostsParams = {}) {
@@ -198,8 +199,11 @@ export async function getPosts(params: GetPostsParams = {}) {
             .toLowerCase()
             .includes(params.query.toLowerCase())
         : true;
+      const matchesAuthor = params.authorId
+        ? post.authorId === params.authorId
+        : true;
 
-      return matchesCategory && matchesTag && matchesQuery;
+      return matchesCategory && matchesTag && matchesQuery && matchesAuthor;
     })
     .sort(
       (a, b) =>
