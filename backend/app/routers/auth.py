@@ -27,6 +27,7 @@ def kakao_login():
         f"?client_id={settings.KAKAO_REST_API_KEY}" # 앱 식별 키
         f"&redirect_uri={settings.KAKAO_REDIRECT_URI}" #성공 후 돌아올 백엔드 주소
         "&response_type=code" #인가코드 요청
+        "&scope=profile_nickname,profile_image" # 닉네임/프로필사진 동의 요청 *프로필,닉네임 받아오게수정
     )
     return RedirectResponse(url=kakao_auth_url) 
 #사용자를 카카오 로그인 페이지로 보냄->로그인->카카오가 리다이렉트(+인가코드)
