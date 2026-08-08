@@ -52,7 +52,7 @@ body {
   position: absolute;
   left: -1px;
   right: -1px;
-  top: 48%;
+  top: 7px;
   height: 2px;
   background: var(--ink);
 }
@@ -63,6 +63,7 @@ body {
 }
 
 .nav-tab {
+  position: relative;
   font-size: 15px;
   font-weight: 700;
   color: var(--ink-muted);
@@ -70,9 +71,30 @@ body {
   padding-bottom: 6px;
 }
 
+.nav-tab::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--ink);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s ease;
+}
+
+.nav-tab:hover::after {
+  transform: scaleX(1);
+}
+
 .nav-tab--active {
   color: var(--accent);
   border-bottom: 2px solid var(--accent);
+}
+
+.nav-tab--active:hover::after {
+  transform: scaleX(0);
 }
 
 .nav-search {
@@ -219,11 +241,20 @@ body {
   text-decoration: none;
   background: var(--card-bg);
   white-space: nowrap;
+  transition: background-color 0.15s ease;
+}
+
+.category-tab:hover {
+  background: var(--border);
 }
 
 .category-tab--active {
   background: var(--ink);
   color: #ffffff;
+}
+
+.category-tab--active:hover {
+  background: var(--ink);
 }
 
 .empty-state {
@@ -417,6 +448,17 @@ body {
   display: flex;
   flex-direction: column;
   gap: 16px;
+}
+
+.recent-item {
+  padding: 8px;
+  margin: -8px;
+  border-radius: 10px;
+  transition: background-color 0.15s ease;
+}
+
+.recent-item:hover {
+  background-color: var(--card-bg);
 }
 
 .recent-title {
@@ -887,6 +929,10 @@ body {
   padding: 0;
 }
 
+.account-logout:hover {
+  text-decoration: underline;
+}
+
 /* /account 페이지 (계정관리). 헤더 드롭다운의 .account-* 클래스와 겹치지 않도록 acct- 접두사 사용 */
 .acct-layout {
   max-width: 1000px;
@@ -1141,6 +1187,14 @@ body {
   gap: 14px;
   text-decoration: none;
   color: inherit;
+  padding: 8px 12px;
+  margin: -8px -12px;
+  border-radius: 10px;
+  transition: background-color 0.15s ease;
+}
+
+.manage-header:hover {
+  background-color: var(--card-bg);
 }
 
 .manage-avatar {
@@ -1192,10 +1246,15 @@ body {
   color: var(--ink-muted);
   text-decoration: none;
   border-right: 1px solid var(--border);
+  transition: background-color 0.15s ease;
 }
 
 .manage-tab:last-child {
   border-right: none;
+}
+
+.manage-tab:hover {
+  background-color: var(--card-bg);
 }
 
 .manage-tab--active {
@@ -1213,12 +1272,19 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 0;
+  padding: 16px 12px;
+  margin: 0 -12px;
   border-top: 1px solid var(--border);
+  border-radius: 10px;
+  transition: background-color 0.15s ease;
 }
 
 .manage-stat-row:last-child {
   border-bottom: 1px solid var(--border);
+}
+
+.manage-stat-row:hover {
+  background-color: var(--card-bg);
 }
 
 .manage-stat-label {
@@ -2173,9 +2239,14 @@ body {
   background: var(--card-bg);
   margin-bottom: 24px;
 }
+.hero-track {
+  display: flex;
+  transition: transform 0.6s ease;
+}
 .hero-image {
   position: relative;
   display: block;
+  flex: none;
   aspect-ratio: 16 / 9;
 }
 .hero-badge {
@@ -2305,6 +2376,14 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 6px 8px;
+  margin: 0 -8px;
+  border-radius: 8px;
+  transition: background-color 0.15s ease;
+}
+
+.creator-item:hover {
+  background-color: var(--card-bg);
 }
 .creator-name {
   font-size: 14px;
