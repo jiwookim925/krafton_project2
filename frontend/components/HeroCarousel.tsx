@@ -19,7 +19,7 @@ export default function HeroCarousel({ posts, authorMap }: HeroCarouselProps) {
     if (posts.length <= 1) return;
     const timer = setInterval(() => {
       setIndex((prev) => (prev + 1) % posts.length);
-    }, 4000);
+    }, 3000);
     return () => clearInterval(timer);
   }, [posts.length]);
 
